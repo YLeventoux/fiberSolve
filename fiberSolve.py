@@ -2,7 +2,7 @@
 """
 Created on Wed Sep 10 16:03:56 2025
 
-@author: leventoux
+@author: Leventoux Yann
 """
 
 import tkinter as tk
@@ -166,3 +166,4 @@ if __name__=="__main__":
     root = tk.Tk()
     app = FiberGUI(root)
     root.mainloop()
+
