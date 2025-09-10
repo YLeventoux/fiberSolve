@@ -1,3 +1,6 @@
+%solving of fundamental mode of a given fiber (by solving bessel function)
+%by Yann Leventoux 2025
+
 close all
 clear all
 
