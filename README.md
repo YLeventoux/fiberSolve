@@ -6,4 +6,4 @@ the waist is calculated either with gaussian aproximation or with patermann 2
 
 the Aeff is calculated either with gaussian approximation or with the field integral formula
 
-it has been done to be more precise than the marcus formula that doesn't work well
+it has been done to be more precise than the marcus formula that doesn't work well, and it's easier to use than EM mode solver
