@@ -1,9 +1,12 @@
-this code calcul the fundamental mode of a given step index optical fiber
-by solving the bessel function for the fiber (with dichotomie)
-it give the waist, neff, Aeff
+This program computes the fundamental mode (LP01) of a step-index optical fiber by solving the Bessel functions of the fiber using a dichotomy method.
+It outputs the effective index (neff), the mode field diameter (waist), and the effective area (Aeff).
 
-the waist is calculated either with gaussian aproximation or with patermann 2
+The mode field diameter can be evaluated in two ways:
+• Gaussian approximation (1/e² criterion)
+• Petermann II definition
 
-the Aeff is calculated either with gaussian approximation or with the field integral formula
+The effective area (Aeff) can also be obtained with two approaches:
+• Gaussian approximation (π·w₀²)
+• Rigorous field integral formula
 
-it has been done to be more precise than the marcus formula that doesn't work well, and it's easier to use than EM mode solver
+Compared to the Marcus approximation, which is often inaccurate for practical fibers, this method provides higher precision while remaining much simpler to use than a full electromagnetic mode solver.
