@@ -27,7 +27,7 @@ function fiberGUI
     % Default values
     typeMenu.ValueChangedFcn = @(src,event) setDefaultValue(src,valueField);
     typeMenu.Value = 'NA';
-    valueField.Value = 0.1;
+    valueField.Value = 0.14;
 
     % Calculate button
     uibutton(fig,'Text','Calculate','Position',[160 150 100 30],...
