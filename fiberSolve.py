@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """
+solving of fundamental mode of a given fiber (by solving bessel function)
+
 Created on Wed Sep 10 16:03:56 2025
 
 @author: Leventoux Yann
@@ -166,4 +168,5 @@ if __name__=="__main__":
     root = tk.Tk()
     app = FiberGUI(root)
     root.mainloop()
+
 
