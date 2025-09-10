@@ -1,4 +1,3 @@
-% by yann leventoux 2025
 close all
 clear all
 
@@ -10,7 +9,7 @@ function fiberGUI
 
     % Input fields
     uilabel(fig,'Text','Core diameter (µm):','Position',[20 310 160 22]);
-    dCoreField = uieditfield(fig,'numeric','Position',[200 310 100 22],'Value',8);
+    dCoreField = uieditfield(fig,'numeric','Position',[200 310 100 22],'Value',8.2);
 
     uilabel(fig,'Text','Wavelength (µm):','Position',[20 270 160 22]);
     lambdaField = uieditfield(fig,'numeric','Position',[200 270 100 22],'Value',1.55);
@@ -38,7 +37,7 @@ end
 function setDefaultValue(typeMenu,valueField)
     switch typeMenu.Value
         case 'NA'
-            valueField.Value = 0.1;
+            valueField.Value = 0.14;
         case 'delta n'
             valueField.Value = 1e-3;
         case 'n1'
