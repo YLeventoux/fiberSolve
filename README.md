@@ -1,5 +1,5 @@
 this code calcul the fundamental mode of a given step index optical fiber
-it solves the bessel function for the fiber (with dichotomie)
+by solving the bessel function for the fiber (with dichotomie)
 it give the waist, neff, Aeff
 
 the waist is calculated either with gaussian aproximation or with patermann 2
