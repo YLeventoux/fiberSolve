@@ -10,3 +10,4 @@ The effective area (Aeff) can also be obtained with two approaches:
 • Rigorous field integral formula
 
 Compared to the Marcus approximation, which is often inaccurate for practical fibers, this method provides higher precision while remaining much simpler to use than a full electromagnetic mode solver.
+<img width="963" height="802" alt="image" src="https://github.com/user-attachments/assets/e26d0342-f6e2-4d78-92f9-d0c15b512c59" />
