@@ -8,7 +8,7 @@ fiberGUI
 
 function fiberGUI
     % Main interface
-    fig = uifigure('Name','Fundamental mode calculator','Position',[100 100 420 380]);
+    fig = uifigure('Name','Fundamental mode calculator','Position',[100 120 420 350]);
 
     % Input fields
     uilabel(fig,'Text','Core diameter (µm):','Position',[20 310 160 22]);
@@ -34,7 +34,7 @@ function fiberGUI
         'ButtonPushedFcn',@(btn,event) calculate(dCoreField,lambdaField,typeMenu,valueField,fig));
 
     % Results box
-    uitextarea(fig,'Editable','off','Position',[20 20 380 120],'Value',{'Results:'});
+    uitextarea(fig,'Editable','off','Position',[20 10 380 130],'Value',{'Results:'});
 end
 
 function setDefaultValue(typeMenu,valueField)
@@ -73,8 +73,8 @@ function calculate(dCoreField,lambdaField,typeMenu,valueField,fig)
     NA = sqrt(n1^2 - n2^2);
 
     % Mode calculation
-    rcl = 10*a;
-    [MFD_gauss, MFD_pet, Aeff_rig, neff, rp, Ep] = computeMode(a,rcl,n1,n2,lambda);
+    rcl = 5*a;
+    [MFD_gauss, MFD_pet, MFD_4sigma, Aeff_rig, neff, rp, Ep] = computeMode(a,rcl,n1,n2,lambda);
 
     % Approx effective area from Gaussian
     Aeff_approx = pi*(MFD_gauss/2)^2;
@@ -86,11 +86,13 @@ function calculate(dCoreField,lambdaField,typeMenu,valueField,fig)
     txt = sprintf(['n1 = %.6f, n2 = %.6f\n' ...
                    'neff = %.6f\n' ...
                    'MFD (Gaussian 1/e²) = %.3f µm\n' ...
-                   'MFD (Petermann II)  = %.3f µm\n' ...
+                   'MFD (Petermann 2)  = %.3f µm\n' ...
+                   'MFD (near-field rms) = %.3f µm\n' ...
                    'Aeff (pi*w0²)  = %.3f µm²\n' ...
                    'Aeff (field integral)  = %.3f µm²\n' ...
                    'V-number = %.3f'], ...
-                   n1,n2,neff,MFD_gauss*1e6,MFD_pet*1e6,Aeff_approx*1e12,Aeff_rig*1e12,V);
+                   n1,n2,neff,MFD_gauss*1e6,MFD_pet*1e6,MFD_4sigma*1e6,...
+                   Aeff_approx*1e12,Aeff_rig*1e12,V);
     res = findobj(fig,'Type','uitextarea');
     res.Value = {'Results:',txt};
 
@@ -100,10 +102,11 @@ function calculate(dCoreField,lambdaField,typeMenu,valueField,fig)
     plot(rp*1e6, abs(Ep).^2/max(abs(Ep).^2),'b','LineWidth',1.5); hold on;
     xline(MFD_gauss/2*1e6,'--r','W0 (Gaussian)');
     xline(MFD_pet/2*1e6,'--g','W0 (Petermann)');
+    xline(MFD_4sigma/2*1e6,'--m','W0 (4 sigma))');
     xlabel('Radius (µm)');
     ylabel('Normalized intensity');
     title('LP01 mode profile and MFDs');
-    legend('Mode intensity','Gaussian MFD radius','Petermann MFD radius');
+    legend('Mode intensity','Gaussian MFD radius','Petermann MFD radius','4sigma MFD radius');
     grid on;
 end
 
@@ -126,7 +129,7 @@ function index = silicaIndex(lambda, XGe)
         + ((SiB3+XGe*(GeB3-SiB3))*lambda^2)/(lambda^2-(sqrt(SiC3)+XGe*(sqrt(GeC3)-sqrt(SiC3)))^2));
 end
 
-function [MFD_gauss, MFD_pet, Aeff, neff, rp, Ep] = computeMode(a,rcl,n1,n2,lambda)
+function [MFD_gauss, MFD_pet, MFD_4sigma, Aeff, neff, rp, Ep] = computeMode(a,rcl,n1,n2,lambda)
     rco = a;
     r = linspace(-rcl,rcl,3000);
     Nguess = 100;
@@ -169,18 +172,23 @@ function [MFD_gauss, MFD_pet, Aeff, neff, rp, Ep] = computeMode(a,rcl,n1,n2,lamb
     W0 = max(temp);
     MFD_gauss = 2*W0;
 
-    % --- Petermann MFD
-    num = trapz(rp, (rp.^2) .* abs(Ep).^2 );
-    num = num^2;
-    den = trapz(rp, (rp.^3) .* abs(Ep).^4 );
+    % --- Petermann 2 MFD
+    dEp = gradient(Ep,rp);
+    num = trapz(rp, rp .* Ep.^2 );
+    den = trapz(rp, rp .* dEp.^2 );
     wp = sqrt(2 * num / den);
     MFD_pet = 2*wp;
 
+    % --- 4sigma MFD or near-field rms
+    num = trapz(rp, (rp.^3) .* abs(Ep).^2);
+    den = trapz(rp, (rp) .* abs(Ep).^2);
+    wsig = 2*sqrt(num/den);
+    MFD_4sigma = 2*wsig/sqrt(2);
+
     % --- Rigorous effective area
-    num2 = trapz(rp, abs(Ep).^2 .* rp);
-    num2 = num2^2;
-    den2 = trapz(rp, abs(Ep).^4 .* rp);
-    Aeff = 2*pi * num2/den2;
+    num = 2*pi * (trapz(rp, (Ep.^2) .* rp))^2;
+    den = trapz(rp, (Ep.^4) .* rp);
+    Aeff = num / den;
 end
 
 function U = besselLP01(r,n1,n2,rco,neff,wl)
