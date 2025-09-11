@@ -64,27 +64,36 @@ def computeMode(a, rcl, n1, n2, lam):
     rp = r[r>=0]
     Ep = U[r>=0]
 
+    # Normalize
     normFactor = np.sqrt(simps(np.abs(Ep)**2 * rp, rp) * 2*np.pi)
     Ep = Ep/normFactor
 
+    # --- Gaussian MFD (1/e²)
     I = np.abs(Ep)**2
     I = I/np.max(I)
     temp = rp[I>0.1353]
     W0 = np.max(temp)
     MFD_gauss = 2*W0
 
-    num = simps((rp**2)*np.abs(Ep)**2, rp)
-    num = num**2
-    den = simps((rp**3)*np.abs(Ep)**4, rp)
+    # --- Petermann 2 MFD
+    dEp = np.gradient(Ep, rp)
+    num = simps(rp * Ep**2, rp)
+    den = simps(rp * dEp**2, rp)
     wp = np.sqrt(2*num/den)
     MFD_pet = 2*wp
 
-    num2 = simps(np.abs(Ep)**2*rp, rp)
-    num2 = num2**2
-    den2 = simps(np.abs(Ep)**4*rp, rp)
-    Aeff = 2*np.pi*num2/den2
+    # --- 4σ MFD (rms)
+    num = simps((rp**3) * np.abs(Ep)**2, rp)
+    den = simps(rp * np.abs(Ep)**2, rp)
+    wsig = 2*np.sqrt(num/den)
+    MFD_4sigma = 2*wsig/np.sqrt(2)
 
-    return MFD_gauss, MFD_pet, Aeff, neff, rp, Ep
+    # --- Rigorous effective area
+    numA = (simps((np.abs(Ep)**2) * rp, rp))**2
+    denA = simps((np.abs(Ep)**4) * rp, rp)
+    Aeff = 2*np.pi*numA/denA
+
+    return MFD_gauss, MFD_pet, MFD_4sigma, Aeff, neff, rp, Ep
 
 # -------- GUI ----------
 class FiberGUI:
@@ -111,7 +120,7 @@ class FiberGUI:
 
         tk.Button(root,text="Calculate",command=self.calculate).grid(row=4,column=0,columnspan=2,pady=5)
 
-        self.output = scrolledtext.ScrolledText(root,width=50,height=10)
+        self.output = scrolledtext.ScrolledText(root,width=50,height=12)
         self.output.grid(row=5,column=0,columnspan=2)
 
     def calculate(self):
@@ -131,9 +140,9 @@ class FiberGUI:
             n1 = n2+0.001
 
         NA = np.sqrt(n1**2-n2**2)
-        rcl = 10*a
+        rcl = 5*a
 
-        MFD_gauss, MFD_pet, Aeff_rig, neff, rp, Ep = computeMode(a,rcl,n1,n2,lam)
+        MFD_gauss, MFD_pet, MFD_4sigma, Aeff_rig, neff, rp, Ep = computeMode(a,rcl,n1,n2,lam)
         Aeff_approx = np.pi*(MFD_gauss/2)**2
         V = 2*np.pi*a*NA/lam
 
@@ -143,30 +152,29 @@ class FiberGUI:
             f"neff = {neff:.6f}\n"
             f"MFD (Gaussian 1/e²) = {MFD_gauss*1e6:.3f} µm\n"
             f"MFD (Petermann II)  = {MFD_pet*1e6:.3f} µm\n"
+            f"MFD (near-field rms)= {MFD_4sigma*1e6:.3f} µm\n"
             f"Aeff (pi*w0²)       = {Aeff_approx*1e12:.3f} µm²\n"
             f"Aeff (field int.)   = {Aeff_rig*1e12:.3f} µm²\n"
             f"V-number = {V:.3f}\n")
 
-        # ---- Separate plot (with refresh) ----
+        # ---- Plot ----
         plt.figure(1, figsize=(6,4))
         plt.clf()
         plt.plot(rp*1e6, np.abs(Ep)**2/np.max(np.abs(Ep)**2),
                  'b', label="Mode intensity")
         plt.axvline(MFD_gauss/2*1e6, color='r', linestyle='--', label="W0 Gaussian")
         plt.axvline(MFD_pet/2*1e6, color='g', linestyle='--', label="W0 Petermann")
+        plt.axvline(MFD_4sigma/2*1e6, color='m', linestyle='--', label="W0 (4σ)")
         plt.xlabel("Radius (µm)")
         plt.ylabel("Normalized intensity")
         plt.title("LP01 mode profile and MFDs")
         plt.legend()
         plt.grid()
-
         plt.draw()
-        plt.pause(0.001)   # <--- indispensable pour rafraîchir
+        plt.pause(0.001)
 
 # -------- Run ----------
 if __name__=="__main__":
     root = tk.Tk()
     app = FiberGUI(root)
     root.mainloop()
-
-
