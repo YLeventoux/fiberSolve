@@ -15,22 +15,22 @@ Three definitions are implemented:
 
 - **Near-field rms definition**
 
-  $$
-  d_N = 2 \sqrt{ \frac{2 \int_0^\infty r^3 \, |\psi(r)|^2 \, dr}{\int_0^\infty r \, |\psi(r)|^2 \, dr} }
-  $$
+$$
+d_N = 2 \sqrt{ \frac{2 \int_0^\infty r^3 \, |\psi(r)|^2 \, dr}{\int_0^\infty r \, |\psi(r)|^2 \, dr} }
+$$
 
-  where ψ(r) is the radial field profile.  
-  This is also referred to as the *4σ definition*.
+where ψ(r) is the radial field profile.  
+This is also referred to as the *4σ definition*.
 
 - **Petermann II definition**
 
-  $$
-  w_P = \sqrt{ \frac{2 \int_0^\infty |\psi(r)|^2 r \, dr}{\int_0^\infty \left(\frac{d\psi}{dr}\right)^2 r \, dr} }
-  $$
+$$
+w_P = \sqrt{ \frac{2 \int_0^\infty |\psi(r)|^2 r \, dr}{\int_0^\infty \left(\frac{d\psi}{dr}\right)^2 r \, dr} }
+$$
 
-  $$
-  d_P = 2 \, w_P
-  $$
+$$
+d_P = 2 \, w_P
+$$
 
 ---
 
@@ -40,16 +40,16 @@ Two approaches are available:
 
 - **Gaussian approximation**
 
-  $$
-  A_{\mathrm{eff}} \approx \pi \, w_0^2
-  $$
+$$
+A_{\mathrm{eff}} \approx \pi \, w_0^2
+$$
 
 - **Rigorous field integral**
 
-  $$
-  A_{\mathrm{eff}} = \frac{\left( 2\pi \int_0^\infty |\psi(r)|^2 r \, dr \right)^2}
-  {2\pi \int_0^\infty |\psi(r)|^4 r \, dr}
-  $$
+$$
+A_{\mathrm{eff}} = \frac{\left( 2\pi \int_0^\infty |\psi(r)|^2 r \, dr \right)^2}
+{2\pi \int_0^\infty |\psi(r)|^4 r \, dr}
+$$
 
 ---
 
@@ -64,6 +64,7 @@ this solver provides **higher precision** while remaining significantly **simple
 
 - *Introduction to Fiber Optics*, Ajoy Ghatak and K. Thyagarajan  
 - ITU-T G.650.1, *Definitions and test methods for mode field parameters*
+
 
 
 
