@@ -41,7 +41,7 @@ Two approaches are available:
 - **Gaussian approximation**
 
 $$
-A_{\mathrm{eff}} \approx \pi \, w_0^2
+A_{\mathrm{eff}} \approx \pi \ w_0^2
 $$
 
 - **Rigorous field integral**
