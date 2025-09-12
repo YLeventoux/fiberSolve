@@ -8,10 +8,10 @@ function fiberGUI
     fig = uifigure('Name','Fundamental mode calculator','Position',[100 120 420 350]);
 
     % Input fields
-    uilabel(fig,'Text','Core diameter (µm):','Position',[20 310 160 22]);
+    uilabel(fig,'Text','Core diameter (Âµm):','Position',[20 310 160 22]);
     dCoreField = uieditfield(fig,'numeric','Position',[200 310 100 22],'Value',8.2);
 
-    uilabel(fig,'Text','Wavelength (µm):','Position',[20 270 160 22]);
+    uilabel(fig,'Text','Wavelength (Âµm):','Position',[20 270 160 22]);
     lambdaField = uieditfield(fig,'numeric','Position',[200 270 100 22],'Value',1.55);
 
     uilabel(fig,'Text','Given parameter:','Position',[20 230 160 22]);
@@ -82,11 +82,11 @@ function calculate(dCoreField,lambdaField,typeMenu,valueField,fig)
     % Display results
     txt = sprintf(['n1 = %.6f, n2 = %.6f\n' ...
                    'neff = %.6f\n' ...
-                   'MFD (Gaussian 1/e²) = %.3f µm\n' ...
-                   'MFD (Petermann 2)  = %.3f µm\n' ...
-                   'MFD (near-field rms) = %.3f µm\n' ...
-                   'Aeff (pi*w0²)  = %.3f µm²\n' ...
-                   'Aeff (field integral)  = %.3f µm²\n' ...
+                   'MFD (Gaussian 1/eÂ²) = %.3f Âµm\n' ...
+                   'MFD (Petermann 2)  = %.3f Âµm\n' ...
+                   'MFD (near-field rms) = %.3f Âµm\n' ...
+                   'Aeff (pi*w0Â²)  = %.3f ÂµmÂ²\n' ...
+                   'Aeff (field integral)  = %.3f ÂµmÂ²\n' ...
                    'V-number = %.3f'], ...
                    n1,n2,neff,MFD_gauss*1e6,MFD_pet*1e6,MFD_4sigma*1e6,...
                    Aeff_approx*1e12,Aeff_rig*1e12,V);
@@ -100,7 +100,7 @@ function calculate(dCoreField,lambdaField,typeMenu,valueField,fig)
     xline(MFD_gauss/2*1e6,'--r','W0 (Gaussian)');
     xline(MFD_pet/2*1e6,'--g','W0 (Petermann)');
     xline(MFD_4sigma/2*1e6,'--m','W0 (4 sigma))');
-    xlabel('Radius (µm)');
+    xlabel('Radius (Âµm)');
     ylabel('Normalized intensity');
     title('LP01 mode profile and MFDs');
     legend('Mode intensity','Gaussian MFD radius','Petermann MFD radius','4sigma MFD radius');
@@ -162,7 +162,7 @@ function [MFD_gauss, MFD_pet, MFD_4sigma, Aeff, neff, rp, Ep] = computeMode(a,rc
     normFactor = sqrt(trapz(rp, abs(Ep).^2 .* rp) * 2*pi);
     Ep = Ep ./ normFactor;
 
-    % --- Gaussian MFD (1/e²)
+    % --- Gaussian MFD (1/eÂ²)
     I = abs(Ep).^2;
     I = I./max(I);
     temp = rp(I>0.1353);
